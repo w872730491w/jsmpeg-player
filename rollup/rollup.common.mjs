@@ -31,13 +31,13 @@ export const plugins = [
     minimize: true,
     plugins: [autoprefixer],
   }),
-  eslint({
-    fix: true,
-    exclude: [
-      'node_modules/**',
-      '**/*.(css|scss)',
-    ],
-  }),
+//   eslint({
+//     fix: true,
+//     exclude: [
+//       'node_modules/**',
+//       '**/*.(css|scss)',
+//     ],
+//   }),
   resolve(),
   babel({ babelHelpers: 'bundled' }),
 ];

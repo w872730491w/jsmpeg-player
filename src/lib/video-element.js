@@ -26,6 +26,7 @@ export default class VideoElement {
       progressive = true,
       chunkSize = 1024 * 1024,
       hooks = {},
+      heartbeatInterval = 10000,
     } = {},
     overlayOptions = {},
   ) {
@@ -48,6 +49,7 @@ export default class VideoElement {
         load: () => {},
         ...hooks,
       },
+      heartbeatInterval,
       ...overlayOptions,
     };
 
@@ -64,7 +66,10 @@ export default class VideoElement {
       poster: null,
     };
 
-    if (window.getComputedStyle(this.els.wrapper).getPropertyValue('position') === 'static') {
+    if (
+      window.getComputedStyle(this.els.wrapper).getPropertyValue('position')
+      === 'static'
+    ) {
       this.els.wrapper.style.position = 'relative';
     }
 
@@ -96,7 +101,10 @@ export default class VideoElement {
     });
 
     // eslint-disable-next-line no-underscore-dangle
-    const _options = { ...this.options, autoplay: false };
+    const _options = {
+      ...this.options,
+      autoplay: false,
+    };
 
     // Create the player instance
     this.player = new Player(this.options.videoUrl, _options, {
@@ -139,7 +147,11 @@ export default class VideoElement {
     this.els.wrapper.playerInstance = this.player;
 
     // Setup the poster element, if any
-    if (this.options.poster && !this.options.autoplay && !this.player.options.streaming) {
+    if (
+      this.options.poster
+      && !this.options.autoplay
+      && !this.player.options.streaming
+    ) {
       this.options.decodeFirstFrame = false;
       this.els.poster = new Image();
       this.els.poster.src = this.options.poster;
@@ -173,7 +185,11 @@ export default class VideoElement {
       }
 
       this.unlockAudioBound = this.onUnlockAudio.bind(this, unlockAudioElement);
-      unlockAudioElement.addEventListener('touchstart', this.unlockAudioBound, false);
+      unlockAudioElement.addEventListener(
+        'touchstart',
+        this.unlockAudioBound,
+        false,
+      );
       unlockAudioElement.addEventListener('click', this.unlockAudioBound, true);
     }
   }

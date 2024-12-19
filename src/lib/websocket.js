@@ -8,9 +8,8 @@ export default class WSSource {
     this.callbacks = { connect: [], data: [] };
     this.destination = null;
 
-    this.reconnectInterval = options.reconnectInterval !== undefined
-      ? options.reconnectInterval
-      : 5;
+    this.reconnectInterval =
+      options.reconnectInterval !== undefined ? options.reconnectInterval : 5;
     this.shouldAttemptReconnect = !!this.reconnectInterval;
 
     this.completed = false;
@@ -47,11 +46,15 @@ export default class WSSource {
     } else {
       this.socket = new WebSocket(this.url);
     }
-    this.socket.binaryType = 'arraybuffer';
+    this.socket.binaryType = "arraybuffer";
     this.socket.onmessage = this.onMessage.bind(this);
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onerror = this.onClose.bind(this);
     this.socket.onclose = this.onClose.bind(this);
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
+    this.heartbeat(this.options.heartbeatInterval);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -70,6 +73,7 @@ export default class WSSource {
         this.start();
       }, this.reconnectInterval * 1000);
     }
+    clearInterval(this.heartbeatInterval);
   }
 
   onMessage(ev) {
@@ -87,5 +91,11 @@ export default class WSSource {
     if (this.destination) {
       this.destination.write(ev.data);
     }
+  }
+
+  heartbeat(interval) {
+    this.heartbeatInterval = setInterval(() => {
+        this.socket.send("ping");
+    }, interval);
   }
 }

@@ -30,7 +30,6 @@ export default class Player {
         this.hooks.load();
       }
     };
-
     if (options.source) {
       // eslint-disable-next-line new-cap
       this.source = new options.source(url, this.options);
